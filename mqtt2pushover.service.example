@@ -9,8 +9,8 @@ User=<username>
 Environment=MQTT_HOST=127.0.0.1
 Environment=PUSHOVER_TOKEN=<app-token>
 Environment=PUSHOVER_USER=<user-key>
-ExecStart=/home/<username>/<path-to>/mqtt2pushover/.venv/bin/gourd mqtt2pushover:mqtt
-WorkingDirectory=/home/<username>/<path-to>/mqtt2pushover
+ExecStart=/<path-to>/mqtt2pushover/.venv/bin/gourd mqtt2pushover:mqtt
+WorkingDirectory=/<path-to>/mqtt2pushover
 
 [Install]
 WantedBy=multi-user.target
