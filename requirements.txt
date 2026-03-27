@@ -1,0 +1,3 @@
+gourd
+paho-mqtt<2
+requests

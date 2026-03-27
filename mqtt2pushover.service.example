@@ -1,0 +1,16 @@
+[Unit]
+Description=Forward MQTT messages to Pushover push notifications
+After=network.target mosquitto.service
+
+[Service]
+Restart=on-failure
+RestartSec=5s
+User=zwhite
+Environment=MQTT_HOST=127.0.0.1
+Environment=PUSHOVER_TOKEN=<app-token>
+Environment=PUSHOVER_USER=<user-key>
+ExecStart=/home/zwhite/home_automation/mqtt2pushover/.venv/bin/gourd mqtt2pushover:mqtt
+WorkingDirectory=/home/zwhite/home_automation/mqtt2pushover
+
+[Install]
+WantedBy=multi-user.target
