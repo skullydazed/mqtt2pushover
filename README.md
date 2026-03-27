@@ -8,7 +8,7 @@ Subscribes to `pushover/#` MQTT topics and forwards each message to the Pushover
 
 **Plain text** — the payload becomes the message body. The subtopic is used as the title, with `/` and `_` replaced by spaces and title-cased. For example, a message published to `pushover/front_door/alert` will arrive with title "Front Door Alert".
 
-**JSON** — the payload is passed directly to the Pushover API as fields. `token` and `user` are set from environment variables but can be overridden. Any Pushover API field is supported (`title`, `url`, `priority`, `sound`, `device`, etc.).
+**JSON** — the payload is passed directly to the Pushover API as fields. `token` and `user` are set from environment variables but can be overridden. `message` is required. Any other Pushover API field is supported (`title`, `url`, `priority`, `sound`, `device`, etc.).
 
 ```bash
 # Plain text
