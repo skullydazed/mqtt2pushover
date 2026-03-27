@@ -22,6 +22,7 @@ mosquitto_pub -t pushover/test -m '{"message":"Deploy finished","url":"https://e
 
 | Variable | Default | Description |
 |---|---|---|
+| `MQTT_CLIENT_ID` | `mqtt2pushover` | MQTT client identifier |
 | `MQTT_HOST` | `localhost` | MQTT broker host |
 | `MQTT_PORT` | `1883` | MQTT broker port |
 | `MQTT_USER` | `` | MQTT username |

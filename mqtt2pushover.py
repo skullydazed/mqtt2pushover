@@ -11,7 +11,8 @@ MQTT_HOST = os.environ.get('MQTT_HOST', 'localhost')
 MQTT_PORT = int(os.environ.get('MQTT_PORT', '1883'))
 MQTT_USER = os.environ.get('MQTT_USER', '')
 MQTT_PASS = os.environ.get('MQTT_PASS', '')
-MQTT_TOPIC = os.environ.get('MQTT_TOPIC', 'pushover/#')
+MQTT_TOPIC_PREFIX = os.environ.get('MQTT_TOPIC', 'pushover')
+MQTT_TOPIC = MQTT_TOPIC_PREFIX + '/#')
 
 PUSHOVER_TOKEN = os.environ.get('PUSHOVER_TOKEN', '')
 PUSHOVER_USER = os.environ.get('PUSHOVER_USER', '')
@@ -45,7 +46,7 @@ def on_message(msg):
         pass
 
     # Plain text: use subtopic as title if present
-    subtopic = msg.topic.removeprefix('pushover/').strip('/').replace('/', ' ').replace('_', ' ').title()
+    subtopic = msg.topic.removeprefix(MQTT_TOPIC_PREFIX).strip('/').replace('/', ' ').replace('_', ' ').title()
     data = {
         'token': PUSHOVER_TOKEN,
         'user': PUSHOVER_USER,
