@@ -12,7 +12,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13"
-      - run: pip install ruff ty
+      - run: pip install -r requirements-dev.txt
       - run: ruff check .
       - run: ruff format --check .
       - run: ty check
@@ -27,5 +27,5 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - run: pip install -r requirements.txt -r requirements-dev.txt
+      - run: pip install -r requirements-dev.txt
       - run: pytest tests/ -v
