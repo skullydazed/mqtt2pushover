@@ -22,6 +22,27 @@ def mod():
         return mqtt2pushover
 
 
+# --- validate_config tests ---
+
+@pytest.mark.parametrize("token,user", [
+    ('', ''),
+    ('tok', ''),
+    ('', 'usr'),
+])
+def test_validate_config_missing_raises(mod, token, user, monkeypatch):
+    monkeypatch.setattr(mod, 'PUSHOVER_TOKEN', token)
+    monkeypatch.setattr(mod, 'PUSHOVER_USER', user)
+    with pytest.raises(SystemExit) as exc:
+        mod.validate_config()
+    assert 'ERROR' in str(exc.value)
+
+
+def test_validate_config_ok(mod, monkeypatch):
+    monkeypatch.setattr(mod, 'PUSHOVER_TOKEN', 'tok')
+    monkeypatch.setattr(mod, 'PUSHOVER_USER', 'usr')
+    mod.validate_config()  # must not raise
+
+
 # --- send_pushover tests ---
 
 def test_send_pushover_success(mod):

@@ -2,6 +2,7 @@
 
 import json
 import os
+import sys
 
 import requests
 from gourd import Gourd
@@ -19,6 +20,12 @@ PUSHOVER_USER = os.environ.get('PUSHOVER_USER', '')
 PUSHOVER_URL = 'https://api.pushover.net/1/messages.json'
 
 mqtt = Gourd(app_name=MQTT_CLIENT_ID, mqtt_host=MQTT_HOST, mqtt_port=MQTT_PORT, username=MQTT_USER, password=MQTT_PASS)
+
+
+def validate_config():
+    missing = [name for name, val in [('PUSHOVER_TOKEN', PUSHOVER_TOKEN), ('PUSHOVER_USER', PUSHOVER_USER)] if not val]
+    if missing:
+        sys.exit(f"ERROR: required environment variable(s) not set: {', '.join(missing)}")
 
 
 def send_pushover(data):
@@ -58,4 +65,5 @@ def on_message(msg):
 
 
 if __name__ == '__main__':
+    validate_config()
     mqtt.run_forever()
