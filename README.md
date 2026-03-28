@@ -1,8 +1,6 @@
 # mqtt2pushover
 
-Bridges MQTT messages to [Pushover](https://pushover.net) push notifications.
-
-Subscribes to `pushover/#` MQTT topics and forwards each message to the Pushover API.
+Allows you to send push notifications to your phone from any MQTT client. This service subscribes to `pushover/#` MQTT topics and forwards each message to the Pushover API.
 
 ## Message formats
 
