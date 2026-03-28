@@ -20,15 +20,30 @@ PUSHOVER_TOKEN = os.environ.get('PUSHOVER_TOKEN', '')
 PUSHOVER_USER = os.environ.get('PUSHOVER_USER', '')
 PUSHOVER_URL = 'https://api.pushover.net/1/messages.json'
 
-mqtt = Gourd(app_name=MQTT_CLIENT_ID, mqtt_host=MQTT_HOST, mqtt_port=MQTT_PORT, username=MQTT_USER, password=MQTT_PASS)
+mqtt = Gourd(
+    app_name=MQTT_CLIENT_ID,
+    mqtt_host=MQTT_HOST,
+    mqtt_port=MQTT_PORT,
+    username=MQTT_USER,
+    password=MQTT_PASS,
+)
 
 logger = logging.getLogger(__name__)
 
 
 def validate_config():
-    missing = [name for name, val in [('PUSHOVER_TOKEN', PUSHOVER_TOKEN), ('PUSHOVER_USER', PUSHOVER_USER)] if not val]
+    missing = [
+        name
+        for name, val in [
+            ('PUSHOVER_TOKEN', PUSHOVER_TOKEN),
+            ('PUSHOVER_USER', PUSHOVER_USER),
+        ]
+        if not val
+    ]
     if missing:
-        sys.exit(f"ERROR: required environment variable(s) not set: {', '.join(missing)}")
+        sys.exit(
+            f'ERROR: required environment variable(s) not set: {", ".join(missing)}'
+        )
 
 
 def publish_status(topic, sent, error=None):
@@ -68,7 +83,13 @@ def on_message(msg):
         pass
 
     # Plain text: use subtopic as title if present
-    subtopic = msg.topic.removeprefix(MQTT_TOPIC_PREFIX).strip('/').replace('/', ' ').replace('_', ' ').title()
+    subtopic = (
+        msg.topic.removeprefix(MQTT_TOPIC_PREFIX)
+        .strip('/')
+        .replace('/', ' ')
+        .replace('_', ' ')
+        .title()
+    )
     data = {
         'token': PUSHOVER_TOKEN,
         'user': PUSHOVER_USER,
