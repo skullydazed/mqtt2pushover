@@ -28,14 +28,23 @@ def validate_config():
         sys.exit(f"ERROR: required environment variable(s) not set: {', '.join(missing)}")
 
 
-def send_pushover(data):
+def publish_status(topic, sent, error=None):
+    payload = {'sent': sent}
+    if error:
+        payload['error'] = error
+    mqtt.publish(topic + '/status', json.dumps(payload))
+
+
+def send_pushover(data, topic):
     """Send a message to Pushover. data must include token, user, message."""
     try:
         response = requests.post(PUSHOVER_URL, json=data)
         response.raise_for_status()
         print(f'Sent Pushover message: {data.get("message", "")!r}')
+        publish_status(topic, True)
     except requests.RequestException as e:
         print(f'ERROR sending Pushover message: {e}')
+        publish_status(topic, False, str(e))
 
 
 @mqtt.subscribe(MQTT_TOPIC)
@@ -47,7 +56,10 @@ def on_message(msg):
         if isinstance(payload, dict):
             data = {'token': PUSHOVER_TOKEN, 'user': PUSHOVER_USER}
             data.update(payload)
-            send_pushover(data)
+            if not data.get('message'):
+                publish_status(msg.topic, False, "required field 'message' missing")
+                return
+            send_pushover(data, msg.topic)
             return
     except (json.JSONDecodeError, ValueError):
         pass
@@ -61,7 +73,7 @@ def on_message(msg):
     }
     if subtopic:
         data['title'] = subtopic
-    send_pushover(data)
+    send_pushover(data, msg.topic)
 
 
 if __name__ == '__main__':
