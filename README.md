@@ -18,6 +18,26 @@ mosquitto_pub -t pushover/front_door/alert -m "Motion detected"
 mosquitto_pub -t pushover/test -m '{"message":"Deploy finished","url":"https://example.com"}'
 ```
 
+## Status replies
+
+After every message attempt, mqtt2pushover publishes a status reply to `{original_topic}/status`.
+
+**Success:**
+```json
+{"sent": true}
+```
+
+**Failure** (validation error or Pushover API error):
+```json
+{"sent": false, "error": "required field 'message' missing"}
+```
+
+Subscribe to your topic's `/status` suffix to receive feedback for your own messages only:
+
+```bash
+mosquitto_sub -t pushover/front_door/alert/status
+```
+
 ## Configuration
 
 | Variable | Default | Description |
