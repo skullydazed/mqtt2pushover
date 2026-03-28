@@ -1,4 +1,5 @@
 import json
+import logging
 import sys
 import unittest.mock
 
@@ -57,24 +58,26 @@ def test_send_pushover_success(mod):
     mock_status.assert_called_once_with("pushover/alerts", True)
 
 
-def test_send_pushover_http_error(mod, capsys):
+def test_send_pushover_http_error(mod, caplog):
     data = {"token": "t", "user": "u", "message": "hello"}
     with unittest.mock.patch("requests.post") as mock_post, \
-         unittest.mock.patch.object(mod, "publish_status") as mock_status:
+         unittest.mock.patch.object(mod, "publish_status") as mock_status, \
+         caplog.at_level(logging.ERROR, logger="mqtt2pushover"):
         mock_post.return_value.raise_for_status.side_effect = requests.HTTPError("403")
         mod.send_pushover(data, "pushover/alerts")  # must not raise
-    assert "ERROR" in capsys.readouterr().out
+    assert "403" in caplog.text
     args = mock_status.call_args[0]
     assert args[1] is False
     assert "403" in args[2]
 
 
-def test_send_pushover_network_error(mod, capsys):
+def test_send_pushover_network_error(mod, caplog):
     data = {"token": "t", "user": "u", "message": "hello"}
     with unittest.mock.patch("requests.post", side_effect=requests.ConnectionError("refused")), \
-         unittest.mock.patch.object(mod, "publish_status") as mock_status:
+         unittest.mock.patch.object(mod, "publish_status") as mock_status, \
+         caplog.at_level(logging.ERROR, logger="mqtt2pushover"):
         mod.send_pushover(data, "pushover/alerts")  # must not raise
-    assert "ERROR" in capsys.readouterr().out
+    assert "refused" in caplog.text
     assert mock_status.call_args[0][1] is False
 
 

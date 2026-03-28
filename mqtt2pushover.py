@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import json
+import logging
 import os
 import sys
 
@@ -21,6 +22,8 @@ PUSHOVER_URL = 'https://api.pushover.net/1/messages.json'
 
 mqtt = Gourd(app_name=MQTT_CLIENT_ID, mqtt_host=MQTT_HOST, mqtt_port=MQTT_PORT, username=MQTT_USER, password=MQTT_PASS)
 
+logger = logging.getLogger(__name__)
+
 
 def validate_config():
     missing = [name for name, val in [('PUSHOVER_TOKEN', PUSHOVER_TOKEN), ('PUSHOVER_USER', PUSHOVER_USER)] if not val]
@@ -40,10 +43,10 @@ def send_pushover(data, topic):
     try:
         response = requests.post(PUSHOVER_URL, json=data)
         response.raise_for_status()
-        print(f'Sent Pushover message: {data.get("message", "")!r}')
+        logger.info('Sent Pushover message: %r', data.get('message', ''))
         publish_status(topic, True)
     except requests.RequestException as e:
-        print(f'ERROR sending Pushover message: {e}')
+        logger.error('Failed to send Pushover message: %s', e)
         publish_status(topic, False, str(e))
 
 
@@ -77,5 +80,6 @@ def on_message(msg):
 
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
     validate_config()
     mqtt.run_forever()
