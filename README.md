@@ -27,7 +27,7 @@ mosquitto_pub -t pushover/test -m '{"message":"Deploy finished","url":"https://e
 | `MQTT_PORT` | `1883` | MQTT broker port |
 | `MQTT_USER` | `` | MQTT username |
 | `MQTT_PASS` | `` | MQTT password |
-| `MQTT_TOPIC` | `pushover/#` | MQTT topic to subscribe to |
+| `MQTT_TOPIC` | `pushover` | MQTT topic prefix to subscribe to (appends `/#` automatically) |
 | `PUSHOVER_TOKEN` | `` | Pushover app API token |
 | `PUSHOVER_USER` | `` | Pushover user key |
 
